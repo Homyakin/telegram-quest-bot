@@ -1,3 +1,5 @@
 package ru.homyakin.quest.bot.quest.models;
 
-public record QuestStage(String name, String text) { }
+import java.util.List;
+
+public record QuestStage(String name, String text, List<StageAvailableAnswer> availableAnswers) { }
