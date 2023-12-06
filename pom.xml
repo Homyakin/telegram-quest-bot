@@ -13,6 +13,7 @@
         <spring.version>3.2.0</spring.version>
         <vavr.version>0.10.4</vavr.version>
         <jackson.version>2.15.2</jackson.version>
+        <telegram.version>6.8.0</telegram.version>
 
         <junit.version>5.10.0</junit.version>
 
@@ -26,6 +27,18 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>${telegram.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.module</groupId>
+                    <artifactId>jackson-module-jaxb-annotations</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
