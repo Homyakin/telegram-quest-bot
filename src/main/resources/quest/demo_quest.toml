@@ -6,6 +6,7 @@ startStageName = "stages1"
 [[stages]]
 name = "stages1"
 text = "Вас приветствует демонстрационный опросник, выберите один из двух вариантов"
+photoPath = "quest/photo/hackathon_logo.png"
 
 [[stages]]
 name = "stages2"

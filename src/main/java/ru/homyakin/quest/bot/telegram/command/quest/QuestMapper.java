@@ -1,5 +1,6 @@
 package ru.homyakin.quest.bot.telegram.command.quest;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -10,6 +11,7 @@ import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
 import ru.homyakin.quest.bot.telegram.utils.ReplyKeyboardBuilder;
 import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
+import ru.homyakin.quest.bot.utils.ResourceUtils;
 
 public class QuestMapper {
     public static TelegramMessage questStageToTelegramMessage(QuestStage questStage, long chatId) {
@@ -25,6 +27,9 @@ public class QuestMapper {
                 builder::removeKeyboard
             );
         }
+        questStage.photoPath()
+            .flatMap(ResourceUtils::getResource)
+            .ifPresent(builder::photo);
         return builder.build();
     }
 

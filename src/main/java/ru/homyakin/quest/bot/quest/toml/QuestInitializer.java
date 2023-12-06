@@ -3,7 +3,6 @@ package ru.homyakin.quest.bot.quest.toml;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.toml.TomlMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -16,7 +15,6 @@ import ru.homyakin.quest.bot.utils.ResourceUtils;
 @Component
 public class QuestInitializer {
     private static final String QUEST_PATH = "quest";
-    private static final String DEMO_PATH = File.separator + "demo_quest.toml";
 
     private static final Logger logger = LoggerFactory.getLogger(QuestInitializer.class);
 

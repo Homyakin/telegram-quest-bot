@@ -1,6 +1,7 @@
 package ru.homyakin.quest.bot.telegram;
 
 import io.vavr.control.Either;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
+import ru.homyakin.quest.bot.utils.StreamUtils;
 
 @Component
 public class TelegramSender extends DefaultAbsSender {
@@ -42,7 +44,9 @@ public class TelegramSender extends DefaultAbsSender {
 
     private Either<TelegramError, Message> send(SendPhoto sendPhoto) {
         try {
-            return Either.right(execute(sendPhoto));
+            final var result = execute(sendPhoto);
+            StreamUtils.closeInputStreamIgnoreException(sendPhoto.getFile().getNewMediaStream());
+            return Either.right(result);
         } catch (Exception e) {
             logger.error(
                 "Unable send photo with text %s to %s".formatted(sendPhoto.getCaption(), sendPhoto.getChatId()), e

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import ru.homyakin.quest.bot.locale.common.CommonLocalization;
 import ru.homyakin.quest.bot.locale.common.CommonResource;
 import ru.homyakin.quest.bot.utils.ResourceUtils;
+import ru.homyakin.quest.bot.utils.StreamUtils;
 
 public class LocalizationInitializer {
     private static final String LOCALIZATION_PATH = "localization";
@@ -23,11 +24,7 @@ public class LocalizationInitializer {
         ResourceUtils.getResource(LOCALIZATION_PATH + COMMON_PATH)
             .ifPresent(it -> {
                 CommonLocalization.add(extractClass(mapper, it, CommonResource.class));
-                try {
-                    it.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                StreamUtils.closeInputStreamIgnoreException(it);
             });
         logger.info("Localization loaded");
     }

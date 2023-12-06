@@ -18,7 +18,8 @@ public record QuestToml(
 ){
     public record Stage(
         String name,
-        String text
+        String text,
+        Optional<String> photoPath
     ) { }
 
     public record StageSelection(
@@ -37,7 +38,8 @@ public record QuestToml(
             new QuestStage(
                 startStage.name(),
                 startStage.text(),
-                toAvailableAnswers(nextStages)
+                toAvailableAnswers(nextStages),
+                startStage.photoPath()
             )
         );
     }
@@ -62,7 +64,8 @@ public record QuestToml(
                             new QuestStage(
                                 stage.name(),
                                 stage.text(),
-                                toAvailableAnswers(selection.nextStages)
+                                toAvailableAnswers(selection.nextStages),
+                                stage.photoPath()
                             )
                         ),
                         selection.value
