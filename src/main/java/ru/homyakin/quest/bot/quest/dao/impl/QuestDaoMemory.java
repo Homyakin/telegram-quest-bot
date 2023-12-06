@@ -8,6 +8,7 @@ import ru.homyakin.quest.bot.quest.models.QuestShort;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,11 +19,17 @@ public class QuestDaoMemory implements QuestDao {
 
     private static final String questName = "testDemo";
 
+    private static final QuestStage finalStage = new QuestStage(
+            "finalStage",
+            "Вот и всё, ребята:)",
+            Collections.emptyList()
+    );
+
     private static final StageAvailableAnswer sSt1A = new StageAvailableAnswer(
             "firstStageFirstAnswer",
             Optional.empty(),
             AnswerType.USER_INPUT,
-            Optional.empty(),
+            Optional.of(finalStage),
             Optional.of("[a-z]")
     );
 
@@ -36,7 +43,7 @@ public class QuestDaoMemory implements QuestDao {
             "firstStageSecondAnswer",
             Optional.of("Вариант 2"),
             AnswerType.USER_INPUT,
-            Optional.empty(),
+            Optional.of(finalStage),
             Optional.of("[0-9]")
     );
 
