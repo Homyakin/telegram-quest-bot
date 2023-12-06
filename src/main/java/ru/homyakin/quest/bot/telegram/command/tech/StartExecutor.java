@@ -2,6 +2,7 @@ package ru.homyakin.quest.bot.telegram.command.tech;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import ru.homyakin.quest.bot.locale.common.CommonLocalization;
 import ru.homyakin.quest.bot.telegram.TelegramSender;
 import ru.homyakin.quest.bot.telegram.command.CommandExecutor;
 import ru.homyakin.quest.bot.telegram.utils.ReplyKeyboardBuilder;
@@ -20,7 +21,7 @@ public class StartExecutor extends CommandExecutor<Start> {
         // TODO сбросить стейт пользователя
         telegramSender.send(SendMessageBuilder.builder()
             .chatId(command.userId())
-            .text("Hello world")
+            .text(CommonLocalization.start())
             .keyboard(
                 ReplyKeyboardBuilder
                     .builder()

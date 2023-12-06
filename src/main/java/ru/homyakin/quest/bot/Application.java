@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.homyakin.quest.bot.locale.LocalizationInitializer;
 import ru.homyakin.quest.bot.telegram.TelegramUpdateReceiver;
 
 @SpringBootApplication
@@ -15,6 +16,7 @@ public class Application implements CommandLineRunner {
     private final TelegramUpdateReceiver telegramUpdateReceiver;
 
     public Application(TelegramUpdateReceiver telegramUpdateReceiver) {
+        LocalizationInitializer.initLocale();
         this.telegramUpdateReceiver = telegramUpdateReceiver;
     }
 
