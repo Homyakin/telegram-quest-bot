@@ -10,4 +10,8 @@ public class CommonLocalization {
     public static String start() {
         return resource.start();
     }
+
+    public static String questNotFound() {
+        return resource.questNotFound();
+    }
 }
