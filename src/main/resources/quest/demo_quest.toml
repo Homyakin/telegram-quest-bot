@@ -8,7 +8,7 @@ text = "Вас приветствует демонстрационный опр�
 
 [[startStage.availableAnswers]]
 name = "firstStageFirstAnswer"
-text = "Вариант 1"
+value = "Вариант 1"
 answerType = "NO_INLINE_BUTTON"
 
 [startStage.availableAnswers.nextStage]
@@ -18,7 +18,7 @@ text = "Вы выбрали первый вариант. Молодцы, а те
 [[startStage.availableAnswers.nextStage.availableAnswers]]
 name = "firstStageFirstAnswer"
 answerType = "USER_INPUT"
-answerFilter = ".*"
+value = ".*"
 
 [startStage.availableAnswers.nextStage.availableAnswers.nextStage]
 name = "finalStage"
@@ -27,7 +27,7 @@ availableAnswers = []
 
 [[startStage.availableAnswers]]
 name = "firstStageSecondAnswer"
-text = "Вариант 2"
+value = "Вариант 2"
 answerType = "NO_INLINE_BUTTON"
 
 [startStage.availableAnswers.nextStage]
@@ -37,7 +37,7 @@ text = "Вы выбрали второй вариант, неплохо. Оце�
 [[startStage.availableAnswers.nextStage.availableAnswers]]
 name = "firstStageSecondAnswer"
 answerType = "USER_INPUT"
-answerFilter = "^(?:[1-9]|10)$"
+value = "^(?:[1-9]|10)$"
 
 [startStage.availableAnswers.nextStage.availableAnswers.nextStage]
 name = "finalStage"

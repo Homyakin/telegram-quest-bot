@@ -23,23 +23,23 @@ name = "stages1"
 
 [[startStage.nextStages]]
 name = "stages2"
-text = "Вариант 1"
+value = "Вариант 1"
 answerType = "NO_INLINE_BUTTON"
 
 [[startstages.nextStages.nextStages]]
 name = "final"
 answerType = "USER_INPUT"
-answerFilter = ".*"
+value = ".*"
 
 [[startstages.nextStages]]
 name = "stages3"
-text = "Вариант 2"
+value = "Вариант 2"
 answerType = "NO_INLINE_BUTTON"
 
 [[startstages.nextStages.nextStages]]
 name = "final"
 answerType = "USER_INPUT"
-answerFilter = "^(?:[1-9]|10)$"
+value = "^(?:[1-9]|10)$"
 
 
 

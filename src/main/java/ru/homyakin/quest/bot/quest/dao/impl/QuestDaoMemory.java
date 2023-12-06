@@ -29,10 +29,9 @@ public class QuestDaoMemory implements QuestDao {
 
     private static final StageAvailableAnswer sSt1A = new StageAvailableAnswer(
         "firstStageFirstAnswer",
-        Optional.empty(),
         AnswerType.USER_INPUT,
         Optional.of(finalStage),
-        Optional.of(".*")
+        ".*"
     );
 
     private static final QuestStage oneSecondStage = new QuestStage(
@@ -43,10 +42,9 @@ public class QuestDaoMemory implements QuestDao {
 
     private static final StageAvailableAnswer sSt2A = new StageAvailableAnswer(
         "firstStageSecondAnswer",
-        Optional.of("Вариант 2"),
         AnswerType.USER_INPUT,
         Optional.of(finalStage),
-        Optional.of("^(?:[1-9]|10)$")
+        "^(?:[1-9]|10)$"
     );
 
     private static final QuestStage twoSecondStage = new QuestStage(
@@ -57,18 +55,16 @@ public class QuestDaoMemory implements QuestDao {
 
     private static final StageAvailableAnswer fSt1A = new StageAvailableAnswer(
         "firstStageFirstAnswer",
-        Optional.of("Вариант 1"),
         AnswerType.NO_INLINE_BUTTON,
         Optional.of(oneSecondStage),
-        Optional.of("Вариант 1")
+        "Вариант 1"
     );
 
     private static final StageAvailableAnswer fSt2A = new StageAvailableAnswer(
         "firstStageSecondAnswer",
-        Optional.of("Вариант 2"),
         AnswerType.NO_INLINE_BUTTON,
         Optional.of(twoSecondStage),
-        Optional.of("Вариант 2")
+        "Вариант 2"
     );
 
     private static final QuestStage firstStage = new QuestStage(

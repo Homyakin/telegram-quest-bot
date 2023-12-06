@@ -53,7 +53,7 @@ public class QuestMapper {
             if (answersInRow % 2 == 0) {
                 builder.addRow();
             }
-            builder.addButton(KeyboardButton.builder().text(answer.text().orElseThrow()).build());
+            builder.addButton(KeyboardButton.builder().text(answer.value()).build());
             answersInRow++;
         }
         return Optional.of(builder.build());

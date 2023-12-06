@@ -20,8 +20,7 @@ public record QuestToml(
     public record StageSelection(
         String name,
         AnswerType answerType,
-        Optional<String> text, // Для типа NO_INLINE_BUTTON
-        Optional<String> answerFilter, // Для типа USER_INPUT
+        String value,
         List<StageSelection> nextStages
     ) { }
 }
