@@ -1,11 +1,13 @@
 package ru.homyakin.quest.bot.telegram.command.quest;
 
 import org.springframework.stereotype.Component;
+import ru.homyakin.quest.bot.locale.common.CommonLocalization;
 import ru.homyakin.quest.bot.quest.models.AnswerType;
 import ru.homyakin.quest.bot.quest.models.UserAnswer;
 import ru.homyakin.quest.bot.quest.services.QuestProcessor;
 import ru.homyakin.quest.bot.telegram.TelegramSender;
 import ru.homyakin.quest.bot.telegram.command.CommandExecutor;
+import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
 
 @Component
 public class QuestNextStageExecutor extends CommandExecutor<QuestNextStage> {
@@ -19,17 +21,22 @@ public class QuestNextStageExecutor extends CommandExecutor<QuestNextStage> {
 
     @Override
     public void execute(QuestNextStage command) {
-        final var next = questProcessor.processStage(
+        questProcessor.processStage(
             command.quest().name(),
             command.userId(),
             new UserAnswer(
                 command.text(), AnswerType.USER_INPUT
             )
-        ).orElseThrow();
-
-        telegramSender.send(QuestMapper.questStageToTelegramMessage(next, command.userId()));
-        if (next.isFinal()) {
-            // TODO если последний, вывести доступные квесты на /start
-        }
+        ).ifPresentOrElse(
+            questStage -> {
+                telegramSender.send(QuestMapper.questStageToTelegramMessage(questStage, command.userId()));
+                if (questStage.isFinal()) {
+                    // TODO если последний, вывести доступные квесты на /start
+                }
+            },
+            () -> telegramSender.send(
+                TelegramMessage.builder().chatId(command.userId()).text(CommonLocalization.questNotFound()).build()
+            )
+        );
     }
 }

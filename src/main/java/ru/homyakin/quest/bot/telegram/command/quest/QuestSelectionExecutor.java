@@ -21,8 +21,10 @@ public class QuestSelectionExecutor extends CommandExecutor<QuestNextStage> {
     public void execute(QuestNextStage command) {
         questProcessor.startQuest(command.text(), command.userId())
             .ifPresentOrElse(
-                questStage -> QuestMapper.questStageToTelegramMessage(questStage, command.userId()),
-                () -> TelegramMessage.builder().chatId(command.userId()).text(CommonLocalization.questNotFound())
+                questStage -> telegramSender.send(QuestMapper.questStageToTelegramMessage(questStage, command.userId())),
+                () -> telegramSender.send(
+                    TelegramMessage.builder().chatId(command.userId()).text(CommonLocalization.questNotFound()).build()
+                )
             );
     }
 }
