@@ -1,5 +1,6 @@
 package ru.homyakin.quest.bot.quest.services;
 
+import ru.homyakin.quest.bot.quest.models.Quest;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.UserAnswer;
 
@@ -15,4 +16,6 @@ public interface QuestProcessor {
 
     // empty если нет такого квеста или квест не начат
     Optional<QuestStage> getUserCurrentStage(String questName, Long userId);
+
+    Optional<Quest> getUserQuest(Long userId);
 }
