@@ -28,5 +28,8 @@ public class CommandParser {
             .map(commandType -> switch (commandType) {
                 case START -> Start.from(message);
             });
+
+        // TODO проверить, если пользователь в квесте, вызвать QuestNextNodeExecutor
+        // TODO если не в квесте -> QuestSelectionExecutor
     }
 }

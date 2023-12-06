@@ -17,6 +17,7 @@ public class StartExecutor extends CommandExecutor<Start> {
 
     @Override
     public void execute(Start command) {
+        // TODO сбросить стейт пользователя
         telegramSender.send(SendMessageBuilder.builder()
             .chatId(command.userId())
             .text("Hello world")
