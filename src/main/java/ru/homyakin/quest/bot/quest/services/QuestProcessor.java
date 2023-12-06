@@ -22,4 +22,6 @@ public interface QuestProcessor {
     Optional<Quest> getUserQuest(Long userId);
 
     List<QuestShort>  getAllQuest();
+
+    void clearUserState(Long userId);
 }
