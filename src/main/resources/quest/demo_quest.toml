@@ -1,47 +1,43 @@
-name = "Quest Example"
+name = "Quest Example 2"
 description = "This is a sample "
 available = true
+startStageName = "stages1"
 
-[startStage]
-name = ""
+[[stages]]
+name = "stages1"
 text = "Вас приветствует демонстрационный опросник, выберите один из двух вариантов"
 
-[[startStage.availableAnswers]]
-name = "firstStageFirstAnswer"
+[[stages]]
+name = "stages2"
+text = "Вы выбрали первый вариант. Молодцы, а теперь оставьте своё мнение о данном проекте:"
+
+[[stages]]
+name = "stages3"
+text = "Вы выбрали второй вариант, неплохо. Оцените ваш опыт от 1 до 10"
+
+[[stages]]
+name = "final"
+text = "Вот и всё, ребята:)"
+
+[[nextStages]]
+name = "stages2"
 value = "Вариант 1"
 answerType = "NO_INLINE_BUTTON"
 
-[startStage.availableAnswers.nextStage]
-name = "secondStage1"
-text = "Вы выбрали первый вариант. Молодцы, а теперь оставьте своё мнение о данном проекте:"
-
-[[startStage.availableAnswers.nextStage.availableAnswers]]
-name = "firstStageFirstAnswer"
+[[nextStages.nextStages]]
+name = "final"
 answerType = "USER_INPUT"
 value = ".*"
 
-[startStage.availableAnswers.nextStage.availableAnswers.nextStage]
-name = "finalStage"
-text = "Вот и всё, ребята:)"
-availableAnswers = []
-
-[[startStage.availableAnswers]]
-name = "firstStageSecondAnswer"
+[[nextStages]]
+name = "stages3"
 value = "Вариант 2"
 answerType = "NO_INLINE_BUTTON"
 
-[startStage.availableAnswers.nextStage]
-name = "secondStage2"
-text = "Вы выбрали второй вариант, неплохо. Оцените ваш опыт от 1 до 10"
-
-[[startStage.availableAnswers.nextStage.availableAnswers]]
-name = "firstStageSecondAnswer"
+[[nextStages.nextStages]]
+name = "final"
 answerType = "USER_INPUT"
 value = "^(?:[1-9]|10)$"
 
-[startStage.availableAnswers.nextStage.availableAnswers.nextStage]
-name = "finalStage"
-text = "Вот и всё, ребята:)"
-availableAnswers = []
 
 

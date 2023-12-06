@@ -4,19 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.toml.TomlMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.homyakin.quest.bot.quest.dao.QuestDao;
-import ru.homyakin.quest.bot.quest.models.Quest;
 import ru.homyakin.quest.bot.utils.ResourceUtils;
 
 @Component
 public class QuestInitializer {
     private static final String QUEST_PATH = "quest";
     private static final String DEMO_PATH = File.separator + "demo_quest.toml";
-    private static final String TEST_PATH = File.separator + "test.toml";
 
     private static final Logger logger = LoggerFactory.getLogger(QuestInitializer.class);
 
@@ -30,20 +30,17 @@ public class QuestInitializer {
         logger.info("Filling quests");
         final var mapper = TomlMapper.builder().build();
         mapper.registerModule(new Jdk8Module());
-        final var quest = ResourceUtils.getResourcePath(QUEST_PATH + DEMO_PATH).map(
-            stream -> extractClass(mapper, stream, Quest.class)
-        ).orElseThrow();
-        questDao.save(quest);
-        logger.info(
-            quest.toString()
-        );
-        final var quest2 = ResourceUtils.getResourcePath(QUEST_PATH + TEST_PATH).map(
-            stream -> extractClass(mapper, stream, QuestToml.class)
-        ).orElseThrow();
-        questDao.save(quest2.toQuest());
-        logger.info(
-            quest2.toString()
-        );
+
+        ResourceUtils.listAllFiles(QUEST_PATH)
+            .stream()
+            .forEach(path -> {
+                logger.info("Parsing quest: " + path.getFileName());
+                try (final var stream = Files.newInputStream(path)) {
+                    questDao.save(extractClass(mapper, stream, QuestToml.class).toQuest());
+                } catch (IOException e) {
+                    logger.error("Error during parsing " + path.toString(), e);
+                }
+            });
         logger.info("Quests loaded");
     }
 

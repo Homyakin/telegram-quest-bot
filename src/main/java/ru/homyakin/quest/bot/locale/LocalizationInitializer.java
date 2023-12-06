@@ -3,6 +3,7 @@ package ru.homyakin.quest.bot.locale;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.toml.TomlMapper;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,15 @@ public class LocalizationInitializer {
     public static void initLocale() {
         logger.info("Filling localization");
         final var mapper = TomlMapper.builder().build();
-        ResourceUtils.getResourcePath(LOCALIZATION_PATH + COMMON_PATH)
-            .ifPresent(it -> CommonLocalization.add(extractClass(mapper, it, CommonResource.class)));
+        ResourceUtils.getResource(LOCALIZATION_PATH + COMMON_PATH)
+            .ifPresent(it -> {
+                CommonLocalization.add(extractClass(mapper, it, CommonResource.class));
+                try {
+                    it.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         logger.info("Localization loaded");
     }
 
