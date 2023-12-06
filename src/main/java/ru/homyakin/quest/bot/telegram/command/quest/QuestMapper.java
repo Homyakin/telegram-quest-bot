@@ -1,8 +1,10 @@
 package ru.homyakin.quest.bot.telegram.command.quest;
 
 import java.util.List;
+import java.util.Optional;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import ru.homyakin.quest.bot.quest.models.AnswerType;
 import ru.homyakin.quest.bot.quest.models.QuestShort;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
@@ -18,7 +20,7 @@ public class QuestMapper {
         if (questStage.isFinal()) {
             builder.removeKeyboard();
         } else {
-            builder.keyboard(answersToKeyboard(questStage.availableAnswers()));
+            builder.keyboard(answersToKeyboard(questStage.availableAnswers()).orElse(null));
         }
         return builder.build();
     }
@@ -35,16 +37,22 @@ public class QuestMapper {
         return builder.build();
     }
 
-    private static ReplyKeyboard answersToKeyboard(List<StageAvailableAnswer> answers) {
+    private static Optional<ReplyKeyboard> answersToKeyboard(List<StageAvailableAnswer> answers) {
+        final var buttonAnswers = answers.stream()
+            .filter(answer -> answer.answerType() == AnswerType.NO_INLINE_BUTTON)
+            .toList();
+        if (buttonAnswers.size() == 0) {
+            return Optional.empty();
+        }
         final var builder = ReplyKeyboardBuilder.builder();
         int answersInRow = 0;
-        for (final var answer: answers) {
+        for (final var answer: buttonAnswers) {
             if (answersInRow % 2 == 0) {
                 builder.addRow();
             }
-            builder.addButton(KeyboardButton.builder().text(answer.text()).build());
+            builder.addButton(KeyboardButton.builder().text(answer.text().orElseThrow()).build());
             answersInRow++;
         }
-        return builder.build();
+        return Optional.of(builder.build());
     }
 }
