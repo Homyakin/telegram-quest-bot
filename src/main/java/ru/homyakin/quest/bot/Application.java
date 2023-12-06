@@ -14,6 +14,7 @@ public class Application implements CommandLineRunner {
     }
 
     public static void main(String[] args) {
+        // test commit
         SpringApplication.run(Application.class, args);
     }
 }
