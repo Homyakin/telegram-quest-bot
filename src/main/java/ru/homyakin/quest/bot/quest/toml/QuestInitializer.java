@@ -16,6 +16,7 @@ import ru.homyakin.quest.bot.utils.ResourceUtils;
 public class QuestInitializer {
     private static final String QUEST_PATH = "quest";
     private static final String DEMO_PATH = File.separator + "demo_quest.toml";
+    private static final String TEST_PATH = File.separator + "test.toml";
 
     private static final Logger logger = LoggerFactory.getLogger(QuestInitializer.class);
 
@@ -34,9 +35,14 @@ public class QuestInitializer {
         ).orElseThrow();
         questDao.save(quest);
         logger.info(
-            ResourceUtils.getResourcePath(QUEST_PATH + DEMO_PATH).map(
-                stream -> extractClass(mapper, stream, Quest.class)
-            ).map(Quest::toString).orElse(null)
+            quest.toString()
+        );
+        final var quest2 = ResourceUtils.getResourcePath(QUEST_PATH + TEST_PATH).map(
+            stream -> extractClass(mapper, stream, QuestToml.class)
+        ).orElseThrow();
+        questDao.save(quest2.toQuest());
+        logger.info(
+            quest2.toString()
         );
         logger.info("Quests loaded");
     }

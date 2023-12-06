@@ -1,42 +1,40 @@
-name = "Quest Example"
+name = "Quest Example 2"
 description = "This is a sample "
 available = true
+startStageName = "stages1"
 
 [[stages]]
 name = "stages1"
-text = "Хуемое"
+text = "Вас приветствует демонстрационный опросник, выберите один из двух вариантов"
 
 [[stages]]
 name = "stages2"
-text = "Хуемое"
+text = "Вы выбрали первый вариант. Молодцы, а теперь оставьте своё мнение о данном проекте:"
 
 [[stages]]
 name = "stages3"
-text = "Хуемое"
+text = "Вы выбрали второй вариант, неплохо. Оцените ваш опыт от 1 до 10"
 
 [[stages]]
 name = "final"
-text = "Хуемое"
+text = "Вот и всё, ребята:)"
 
-[startStage]
-name = "stages1"
-
-[[startStage.nextStages]]
+[[nextStages]]
 name = "stages2"
 value = "Вариант 1"
 answerType = "NO_INLINE_BUTTON"
 
-[[startstages.nextStages.nextStages]]
+[[nextStages.nextStages]]
 name = "final"
 answerType = "USER_INPUT"
 value = ".*"
 
-[[startstages.nextStages]]
+[[nextStages]]
 name = "stages3"
 value = "Вариант 2"
 answerType = "NO_INLINE_BUTTON"
 
-[[startstages.nextStages.nextStages]]
+[[nextStages.nextStages]]
 name = "final"
 answerType = "USER_INPUT"
 value = "^(?:[1-9]|10)$"
