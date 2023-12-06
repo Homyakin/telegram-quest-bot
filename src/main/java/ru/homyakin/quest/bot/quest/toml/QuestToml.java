@@ -1,6 +1,7 @@
 package ru.homyakin.quest.bot.quest.toml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import ru.homyakin.quest.bot.quest.models.AnswerType;
@@ -38,7 +39,8 @@ public record QuestToml(
             new QuestStage(
                 startStage.name(),
                 startStage.text(),
-                toAvailableAnswers(nextStages),
+                // TODO нельзя сделать циклическую ссылку на первый элемент
+                toAvailableAnswers(nextStages, new HashMap<>()),
                 startStage.photoPath()
             )
         );
@@ -48,26 +50,30 @@ public record QuestToml(
         return stages.stream().filter(stage -> stage.name.equals(stageName)).findFirst().orElseThrow();
     }
 
-    private List<StageAvailableAnswer> toAvailableAnswers(List<StageSelection> selections) {
+    private List<StageAvailableAnswer> toAvailableAnswers(
+        List<StageSelection> selections,
+        HashMap<String, QuestStage> mappedStages
+    ) {
         if (selections == null) {
-            return List.of();
+            return new ArrayList<>();
         }
         final var answers = new ArrayList<StageAvailableAnswer>();
         selections.stream()
             .forEach(selection -> {
                 final var stage = getByName(selection.name);
+                final var questStage = Optional.ofNullable(mappedStages.get(stage.name))
+                    .orElseGet(() -> new QuestStage(
+                        stage.name(),
+                        stage.text(),
+                        toAvailableAnswers(selection.nextStages, mappedStages),
+                        stage.photoPath()
+                    ));
+                mappedStages.put(questStage.name(), questStage);
                 answers.add(
                     new StageAvailableAnswer(
                         selection.name(),
                         selection.answerType(),
-                        Optional.of(
-                            new QuestStage(
-                                stage.name(),
-                                stage.text(),
-                                toAvailableAnswers(selection.nextStages),
-                                stage.photoPath()
-                            )
-                        ),
+                        Optional.of(questStage),
                         selection.value
                     )
                 );

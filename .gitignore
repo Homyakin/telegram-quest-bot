@@ -14,3 +14,5 @@ src/main/resources/application-dev.properties
 .project
 .settings/
 bin/
+
+src/main/resources/quest/big_quest.toml
