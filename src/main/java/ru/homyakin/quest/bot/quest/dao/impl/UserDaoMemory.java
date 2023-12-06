@@ -7,8 +7,10 @@ import ru.homyakin.quest.bot.quest.dao.UserDao;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
 import ru.homyakin.quest.bot.quest.models.UserAnswer;
+import ru.homyakin.quest.bot.quest.models.UserAnswerResult;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -86,6 +88,20 @@ public class UserDaoMemory implements UserDao {
         jdbcTemplate.update(
                 "delete from user_current_quest where user_id = :user_id",
                 Map.of("user_id", userId)
+        );
+    }
+
+    @Override
+    public List<UserAnswerResult> getAnswers() {
+        return jdbcTemplate.getJdbcTemplate().query(
+                "select * from user2answers",
+                (rs, rowNum) -> new UserAnswerResult(
+                        rs.getLong("user_id"),
+                        rs.getString("quest_name"),
+                        rs.getString("quest_stage"),
+                        rs.getString("user_answer"),
+                        rs.getTimestamp("date_insert").toLocalDateTime()
+                )
         );
     }
 }

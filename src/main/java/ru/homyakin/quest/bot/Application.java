@@ -1,5 +1,7 @@
 package ru.homyakin.quest.bot;
 
+import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.theme.Theme;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +14,8 @@ import ru.homyakin.quest.bot.telegram.TelegramUpdateReceiver;
 
 @SpringBootApplication
 @EnableScheduling
-public class Application implements CommandLineRunner {
+@Theme(value = "quest.bot")
+public class Application implements CommandLineRunner, AppShellConfigurator {
 
     private final TelegramUpdateReceiver telegramUpdateReceiver;
     private final QuestInitializer questInitializer;
