@@ -16,7 +16,7 @@ public record QuestToml(
     List<Stage> stages,
     String startStageName,
     List<StageSelection> nextStages
-) {
+){
     public record Stage(
         String name,
         String text,
@@ -68,11 +68,6 @@ public record QuestToml(
                         toAvailableAnswers(selection.nextStages, mappedStages),
                         stage.photoPath()
                     ));
-                Optional.ofNullable(mappedStages.get(stage.name)).ifPresent(
-                    it -> {
-                        it.availableAnswers().addAll(questStage.availableAnswers());
-                    }
-                );
                 mappedStages.put(questStage.name(), questStage);
                 answers.add(
                     new StageAvailableAnswer(
