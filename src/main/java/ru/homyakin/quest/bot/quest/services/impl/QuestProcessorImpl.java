@@ -45,6 +45,7 @@ public class QuestProcessorImpl implements QuestProcessor {
                                 return Optional.empty();
                             }
                             StageAvailableAnswer availableAnswer = matchAnswer(questStage, answer).orElseThrow();
+                            userDao.setQuestStage(questName, userId, availableAnswer.nextStage().orElseThrow());
                             userDao.saveUserAnswer(questName, questStage, availableAnswer, userId, answer);
                             return availableAnswer.nextStage();
                         }
