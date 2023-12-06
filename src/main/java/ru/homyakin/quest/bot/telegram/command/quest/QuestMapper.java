@@ -3,6 +3,7 @@ package ru.homyakin.quest.bot.telegram.command.quest;
 import java.util.List;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import ru.homyakin.quest.bot.quest.models.QuestShort;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
 import ru.homyakin.quest.bot.telegram.utils.ReplyKeyboardBuilder;
@@ -19,6 +20,18 @@ public class QuestMapper {
         } else {
             builder.keyboard(answersToKeyboard(questStage.availableAnswers()));
         }
+        return builder.build();
+    }
+
+    public static ReplyKeyboard questsToKeyboard(List<QuestShort> quests) {
+        // TODO обработка, если нет доступных квестов
+        final var builder = ReplyKeyboardBuilder.builder();
+        quests.stream()
+            .filter(QuestShort::available)
+            .forEach(quest -> {
+                builder.addRow();
+                builder.addButton(KeyboardButton.builder().text(quest.name()).build());
+            });
         return builder.build();
     }
 

@@ -31,7 +31,13 @@ public class QuestNextStageExecutor extends CommandExecutor<QuestNextStage> {
             questStage -> {
                 telegramSender.send(QuestMapper.questStageToTelegramMessage(questStage, command.userId()));
                 if (questStage.isFinal()) {
-                    // TODO если последний, вывести доступные квесты на /start
+                    telegramSender.send(
+                        TelegramMessage.builder()
+                            .chatId(command.userId())
+                            .text(CommonLocalization.questEnding())
+                            .keyboard(QuestMapper.questsToKeyboard(questProcessor.getAllQuest()))
+                            .build()
+                    );
                 }
             },
             () -> telegramSender.send(

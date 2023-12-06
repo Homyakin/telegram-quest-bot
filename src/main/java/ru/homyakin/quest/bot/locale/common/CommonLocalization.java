@@ -14,4 +14,8 @@ public class CommonLocalization {
     public static String questNotFound() {
         return resource.questNotFound();
     }
+
+    public static String questEnding() {
+        return resource.questEnding();
+    }
 }

@@ -1,44 +1,31 @@
 package ru.homyakin.quest.bot.telegram.command.tech;
 
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import ru.homyakin.quest.bot.locale.common.CommonLocalization;
+import ru.homyakin.quest.bot.quest.services.QuestProcessor;
 import ru.homyakin.quest.bot.telegram.TelegramSender;
 import ru.homyakin.quest.bot.telegram.command.CommandExecutor;
-import ru.homyakin.quest.bot.telegram.utils.ReplyKeyboardBuilder;
+import ru.homyakin.quest.bot.telegram.command.quest.QuestMapper;
 import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
-import ru.homyakin.quest.bot.utils.ResourceUtils;
 
 @Component
 public class StartExecutor extends CommandExecutor<Start> {
     private final TelegramSender telegramSender;
+    private final QuestProcessor questProcessor;
 
-    public StartExecutor(TelegramSender telegramSender) {
+    public StartExecutor(TelegramSender telegramSender, QuestProcessor questProcessor) {
         this.telegramSender = telegramSender;
+        this.questProcessor = questProcessor;
     }
 
     @Override
     public void execute(Start command) {
         // TODO сбросить стейт пользователя
+        final var quests = questProcessor.getAllQuest();
         telegramSender.send(TelegramMessage.builder()
             .chatId(command.userId())
             .text(CommonLocalization.start())
-            .keyboard(
-                ReplyKeyboardBuilder
-                    .builder()
-                    .addRow()
-                    .addButton(KeyboardButton.builder().text("/start").build())
-                    .build()
-            )
-            .build()
-        );
-
-        // TODO УДАЛИТЬ ПРОСТО ТЕСТ
-        telegramSender.send(TelegramMessage.builder()
-            .chatId(command.userId())
-            .text(CommonLocalization.start())
-            .photo(ResourceUtils.getResourcePath("quest/photo/hackathon_logo.png").orElseThrow())
-            .removeKeyboard()
+            .keyboard(QuestMapper.questsToKeyboard(quests))
             .build()
         );
     }
