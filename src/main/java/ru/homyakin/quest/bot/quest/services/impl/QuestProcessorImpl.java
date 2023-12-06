@@ -41,6 +41,9 @@ public class QuestProcessorImpl implements QuestProcessor {
                             QuestStage questStage = userDao.getUserCurrentStage(questName, userId)
                                     .flatMap(stageName -> questDao.getStage(questName, stageName))
                                     .orElseThrow();
+                            if (questStage.isFinal()) {
+                                return Optional.empty();
+                            }
                             StageAvailableAnswer availableAnswer = matchAnswer(questStage, answer).orElseThrow();
                             userDao.saveUserAnswer(questName, questStage, availableAnswer, userId, answer);
                             return availableAnswer.nextStage();
