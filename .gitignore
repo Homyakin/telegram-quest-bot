@@ -1,0 +1,16 @@
+.idea/
+*.iml
+*.log
+target/
+**/venv/
+__pycache__/
+**.DS_Store
+
+src/main/resources/application-dev.properties
+
+# Eclipse
+.checkstyle
+.classpath
+.project
+.settings/
+bin/
