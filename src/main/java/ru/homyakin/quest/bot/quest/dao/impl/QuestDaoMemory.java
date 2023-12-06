@@ -30,7 +30,7 @@ public class QuestDaoMemory implements QuestDao {
             Optional.empty(),
             AnswerType.USER_INPUT,
             Optional.of(finalStage),
-            Optional.of("[a-z]")
+            Optional.of(".*")
     );
 
     private static final QuestStage oneSecondStage = new QuestStage(
@@ -44,7 +44,7 @@ public class QuestDaoMemory implements QuestDao {
             Optional.of("Вариант 2"),
             AnswerType.USER_INPUT,
             Optional.of(finalStage),
-            Optional.of("[0-9]")
+            Optional.of("^(?:[1-9]|10)$")
     );
 
     private static final QuestStage twoSecondStage = new QuestStage(
