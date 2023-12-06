@@ -15,4 +15,6 @@ public interface UserDao {
     Optional<String> getUserCurrentQuest(Long userId);
 
     Optional<String> getUserCurrentStage(String questName, Long userId);
+
+    void clear(Long userId);
 }

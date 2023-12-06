@@ -61,4 +61,10 @@ public class UserDaoMemory implements UserDao {
     public Optional<String> getUserCurrentStage(String questName, Long userId) {
         return  Optional.ofNullable(user2stage.get(userId));
     }
+
+    @Override
+    public void clear(Long userId) {
+        user2Quest.remove(userId);
+        user2stage.remove(userId);
+    }
 }

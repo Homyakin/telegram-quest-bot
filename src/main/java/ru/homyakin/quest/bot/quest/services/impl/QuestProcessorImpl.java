@@ -65,6 +65,11 @@ public class QuestProcessorImpl implements QuestProcessor {
         return questDao.getAllQuest();
     }
 
+    @Override
+    public void clearUserState(Long userId) {
+        userDao.clear(userId);
+    }
+
     private Optional<StageAvailableAnswer> matchAnswer(QuestStage stage, UserAnswer answer) {
         return stage.availableAnswers().stream()
                 .filter(ans -> ans.isMatchUserAnswer(answer))
