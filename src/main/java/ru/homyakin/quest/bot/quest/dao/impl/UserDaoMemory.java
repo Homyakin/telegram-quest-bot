@@ -1,28 +1,36 @@
 package ru.homyakin.quest.bot.quest.dao.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.homyakin.quest.bot.quest.dao.UserDao;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
 import ru.homyakin.quest.bot.quest.models.UserAnswer;
 
+import javax.sql.DataSource;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class UserDaoMemory implements UserDao {
 
-    private final ConcurrentHashMap<Long, String> user2Quest = new ConcurrentHashMap<>();
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    private final ConcurrentHashMap<Long, String> user2stage = new ConcurrentHashMap<>();
-
-    private final ConcurrentHashMap<Long, ConcurrentHashMap<String, ConcurrentHashMap<String, String>>>
-            user2Answers = new ConcurrentHashMap<>();
+    public UserDaoMemory(DataSource dataSource) {
+        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    }
 
     @Override
     public void setQuestStage(String questName, Long userId, QuestStage questStage) {
-        user2Quest.put(userId, questName);
-        user2stage.put(userId, questStage.name());
+        jdbcTemplate.update(
+                "insert into user_current_quest values(:user_id, :quest_name, :quest_stage) on conflict(user_id) do update set quest_name=excluded.quest_name, quest_stage=excluded.quest_stage",
+                Map.of(
+                        "user_id", userId,
+                        "quest_name", questName,
+                        "quest_stage", questStage.name()
+                )
+        );
     }
 
     @Override
@@ -33,38 +41,51 @@ public class UserDaoMemory implements UserDao {
             Long userId,
             UserAnswer answer
     ) {
-        var userQuest = user2Answers.get(userId);
-        if (userQuest == null) {
-            userQuest = new ConcurrentHashMap<>();
-            var userStages = new ConcurrentHashMap<String, String>();
-            userStages.put(questStage.name(), answer.text());
-            userQuest.put(questName, userStages);
-            user2Answers.put(userId, userQuest);
-        } else {
-            var userStages = userQuest.get(questName);
-            if (userStages == null) {
-                userStages = new ConcurrentHashMap<>();
-                userStages.put(questStage.name(), answer.text());
-                userQuest.put(questName, userStages);
-            } else {
-                userStages.put(questStage.name(), answer.text());
-            }
-        }
+        jdbcTemplate.update(
+                "insert into user2answers values(:user_id, :quest_name, :quest_stage, :user_answer)",
+                Map.of(
+                        "user_id", userId,
+                        "quest_name", questName,
+                        "quest_stage", questStage.name(),
+                        "user_answer", answer.text()
+                )
+        );
     }
 
     @Override
     public Optional<String> getUserCurrentQuest(Long userId) {
-        return Optional.ofNullable(user2Quest.get(userId));
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                    "select quest_name from user_current_quest where user_id = :user_id",
+                    Map.of("user_id", userId),
+                    String.class
+            ));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<String> getUserCurrentStage(String questName, Long userId) {
-        return  Optional.ofNullable(user2stage.get(userId));
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                    "select quest_stage from user_current_quest where user_id = :user_id and quest_name = :quest_name",
+                    Map.of(
+                            "user_id", userId,
+                            "quest_name", questName
+                    ),
+                    String.class
+            ));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public void clear(Long userId) {
-        user2Quest.remove(userId);
-        user2stage.remove(userId);
+        jdbcTemplate.update(
+                "delete from user_current_quest where user_id = :user_id",
+                Map.of("user_id", userId)
+        );
     }
 }

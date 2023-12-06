@@ -1,13 +1,14 @@
 package ru.homyakin.quest.bot.quest.toml;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 import ru.homyakin.quest.bot.quest.models.AnswerType;
 import ru.homyakin.quest.bot.quest.models.Quest;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public record QuestToml(
     String name,
@@ -40,7 +41,7 @@ public record QuestToml(
                 startStage.name(),
                 startStage.text(),
                 // TODO нельзя сделать циклическую ссылку на первый элемент
-                toAvailableAnswers(nextStages, new HashMap<>()),
+                toAvailableAnswers(name, startStage.name(), nextStages, new HashMap<>()),
                 startStage.photoPath()
             )
         );
@@ -51,6 +52,8 @@ public record QuestToml(
     }
 
     private List<StageAvailableAnswer> toAvailableAnswers(
+        String questName,
+        String stageName,
         List<StageSelection> selections,
         HashMap<String, QuestStage> mappedStages
     ) {
@@ -65,13 +68,14 @@ public record QuestToml(
                     .orElseGet(() -> new QuestStage(
                         stage.name(),
                         stage.text(),
-                        toAvailableAnswers(selection.nextStages, mappedStages),
+                        toAvailableAnswers(questName, stage.name(), selection.nextStages, mappedStages),
                         stage.photoPath()
                     ));
                 mappedStages.put(questStage.name(), questStage);
                 answers.add(
                     new StageAvailableAnswer(
-                        selection.name(),
+                            // надо что бы имя ответа было уникальным :(
+                            questName + "-" + stageName + "-" + selection.name(),
                         selection.answerType(),
                         Optional.of(questStage),
                         selection.value
