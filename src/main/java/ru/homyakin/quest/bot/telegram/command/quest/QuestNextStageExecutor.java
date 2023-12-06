@@ -31,6 +31,7 @@ public class QuestNextStageExecutor extends CommandExecutor<QuestNextStage> {
             questStage -> {
                 telegramSender.send(QuestMapper.questStageToTelegramMessage(questStage, command.userId()));
                 if (questStage.isFinal()) {
+                    questProcessor.clearUserState(command.userId());
                     telegramSender.send(
                         TelegramMessage.builder()
                             .chatId(command.userId())

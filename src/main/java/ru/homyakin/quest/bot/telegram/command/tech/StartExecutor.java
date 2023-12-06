@@ -20,7 +20,7 @@ public class StartExecutor extends CommandExecutor<Start> {
 
     @Override
     public void execute(Start command) {
-        // TODO сбросить стейт пользователя
+        questProcessor.clearUserState(command.userId());
         final var quests = questProcessor.getAllQuest();
         telegramSender.send(TelegramMessage.builder()
             .chatId(command.userId())
