@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum CommandType {
-    // TODO разделить личку, группы, коллбэки (или не надо, но хотя бы подумать)
     START("/start"),
     ;
 
