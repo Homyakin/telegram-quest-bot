@@ -7,6 +7,8 @@ import ru.homyakin.quest.bot.telegram.TelegramSender;
 import ru.homyakin.quest.bot.telegram.command.CommandExecutor;
 import ru.homyakin.quest.bot.telegram.utils.ReplyKeyboardBuilder;
 import ru.homyakin.quest.bot.telegram.utils.SendMessageBuilder;
+import ru.homyakin.quest.bot.telegram.utils.SendPhotoBuilder;
+import ru.homyakin.quest.bot.utils.ResourceUtils;
 
 @Component
 public class StartExecutor extends CommandExecutor<Start> {
@@ -29,6 +31,15 @@ public class StartExecutor extends CommandExecutor<Start> {
                     .addButton(KeyboardButton.builder().text("/start").build())
                     .build()
             )
+            .build()
+        );
+
+        // TODO УДАЛИТЬ ПРОСТО ТЕСТ
+        telegramSender.send(SendPhotoBuilder.builder()
+            .chatId(command.userId())
+            .text(CommonLocalization.start())
+            .photo(ResourceUtils.getResourcePath("quest/photo/hackathon_logo.png").orElseThrow())
+            .removeKeyboard()
             .build()
         );
     }

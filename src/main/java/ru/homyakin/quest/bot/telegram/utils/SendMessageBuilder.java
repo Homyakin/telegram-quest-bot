@@ -3,6 +3,7 @@ package ru.homyakin.quest.bot.telegram.utils;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
 public class SendMessageBuilder {
     private final SendMessage.SendMessageBuilder builder = SendMessage.builder();
@@ -28,8 +29,8 @@ public class SendMessageBuilder {
         return this;
     }
 
-    public SendMessageBuilder replyMessageId(int replyMessageId) {
-        this.builder.replyToMessageId(replyMessageId);
+    public SendMessageBuilder removeKeyboard() {
+        this.builder.replyMarkup(ReplyKeyboardRemove.builder().removeKeyboard(true).build());
         return this;
     }
 

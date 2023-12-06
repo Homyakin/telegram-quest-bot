@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Component
@@ -25,6 +26,17 @@ public class TelegramSender extends DefaultAbsSender {
         } catch (Exception e) {
             logger.error(
                 "Unable send message with text %s to %s".formatted(sendMessage.getText(), sendMessage.getChatId()), e
+            );
+            return Either.left(new TelegramError.Internal(e.getMessage()));
+        }
+    }
+
+    public Either<TelegramError, Message> send(SendPhoto sendPhoto) {
+        try {
+            return Either.right(execute(sendPhoto));
+        } catch (Exception e) {
+            logger.error(
+                "Unable send photo with text %s to %s".formatted(sendPhoto.getCaption(), sendPhoto.getChatId()), e
             );
             return Either.left(new TelegramError.Internal(e.getMessage()));
         }
