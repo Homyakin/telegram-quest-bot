@@ -1,11 +1,11 @@
 package ru.homyakin.quest.bot.telegram.command.quest;
 
 import org.springframework.stereotype.Component;
+import ru.homyakin.quest.bot.quest.models.AnswerType;
 import ru.homyakin.quest.bot.quest.models.UserAnswer;
 import ru.homyakin.quest.bot.quest.services.QuestProcessor;
 import ru.homyakin.quest.bot.telegram.TelegramSender;
 import ru.homyakin.quest.bot.telegram.command.CommandExecutor;
-import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
 
 @Component
 public class QuestNextStageExecutor extends CommandExecutor<QuestNextStage> {
@@ -23,16 +23,13 @@ public class QuestNextStageExecutor extends CommandExecutor<QuestNextStage> {
             command.quest().name(),
             command.userId(),
             new UserAnswer(
-                command.text(), null //TODO
+                command.text(), AnswerType.USER_INPUT
             )
         ).orElseThrow();
 
-        telegramSender.send(
-            TelegramMessage
-                .builder()
-                .chatId(command.userId())
-                .text(next.text())
-                .build()
-        );
+        telegramSender.send(QuestMapper.questStageToTelegramMessage(next, command.userId()));
+        if (next.isFinal()) {
+            // TODO если последний, вывести доступные квесты на /start
+        }
     }
 }
