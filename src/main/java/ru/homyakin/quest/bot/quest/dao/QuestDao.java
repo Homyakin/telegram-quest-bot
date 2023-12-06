@@ -13,4 +13,6 @@ public interface QuestDao {
     List<QuestShort> getAllQuest();
 
     Optional<QuestStage> getStage(String questName, String stageName);
+
+    void save(Quest quest);
 }

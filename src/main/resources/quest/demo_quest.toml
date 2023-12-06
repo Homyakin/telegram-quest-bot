@@ -1,0 +1,47 @@
+name = "Quest Example"
+description = "This is a sample "
+available = true
+
+[startStage]
+name = ""
+text = "Вас приветствует демонстрационный опросник, выберите один из двух вариантов"
+
+[[startStage.availableAnswers]]
+name = "firstStageFirstAnswer"
+text = "Вариант 1"
+answerType = "NO_INLINE_BUTTON"
+
+[startStage.availableAnswers.nextStage]
+name = "secondStage1"
+text = "Вы выбрали первый вариант. Молодцы, а теперь оставьте своё мнение о данном проекте:"
+
+[[startStage.availableAnswers.nextStage.availableAnswers]]
+name = "firstStageFirstAnswer"
+answerType = "USER_INPUT"
+answerFilter = ".*"
+
+[startStage.availableAnswers.nextStage.availableAnswers.nextStage]
+name = "finalStage"
+text = "Вот и всё, ребята:)"
+availableAnswers = []
+
+[[startStage.availableAnswers]]
+name = "firstStageSecondAnswer"
+text = "Вариант 2"
+answerType = "NO_INLINE_BUTTON"
+
+[startStage.availableAnswers.nextStage]
+name = "secondStage2"
+text = "Вы выбрали второй вариант, неплохо. Оцените ваш опыт от 1 до 10"
+
+[[startStage.availableAnswers.nextStage.availableAnswers]]
+name = "firstStageSecondAnswer"
+answerType = "USER_INPUT"
+answerFilter = "^(?:[1-9]|10)$"
+
+[startStage.availableAnswers.nextStage.availableAnswers.nextStage]
+name = "finalStage"
+text = "Вот и всё, ребята:)"
+availableAnswers = []
+
+

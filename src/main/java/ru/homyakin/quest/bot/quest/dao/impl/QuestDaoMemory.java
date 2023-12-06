@@ -1,5 +1,7 @@
 package ru.homyakin.quest.bot.quest.dao.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import org.springframework.stereotype.Repository;
 import ru.homyakin.quest.bot.quest.dao.QuestDao;
 import ru.homyakin.quest.bot.quest.models.AnswerType;
@@ -20,89 +22,111 @@ public class QuestDaoMemory implements QuestDao {
     private static final String questName = "testDemo";
 
     private static final QuestStage finalStage = new QuestStage(
-            "finalStage",
-            "Вот и всё, ребята:)",
-            Collections.emptyList()
+        "finalStage",
+        "Вот и всё, ребята:)",
+        Collections.emptyList()
     );
 
     private static final StageAvailableAnswer sSt1A = new StageAvailableAnswer(
-            "firstStageFirstAnswer",
-            Optional.empty(),
-            AnswerType.USER_INPUT,
-            Optional.of(finalStage),
-            Optional.of(".*")
+        "firstStageFirstAnswer",
+        Optional.empty(),
+        AnswerType.USER_INPUT,
+        Optional.of(finalStage),
+        Optional.of(".*")
     );
 
     private static final QuestStage oneSecondStage = new QuestStage(
-            "secondStage1",
-            "Вы выбрали первый вариант. Молодцы, а теперь оставьте своё мнение о данном проекте:",
-            List.of(sSt1A)
+        "secondStage1",
+        "Вы выбрали первый вариант. Молодцы, а теперь оставьте своё мнение о данном проекте:",
+        List.of(sSt1A)
     );
 
     private static final StageAvailableAnswer sSt2A = new StageAvailableAnswer(
-            "firstStageSecondAnswer",
-            Optional.of("Вариант 2"),
-            AnswerType.USER_INPUT,
-            Optional.of(finalStage),
-            Optional.of("^(?:[1-9]|10)$")
+        "firstStageSecondAnswer",
+        Optional.of("Вариант 2"),
+        AnswerType.USER_INPUT,
+        Optional.of(finalStage),
+        Optional.of("^(?:[1-9]|10)$")
     );
 
     private static final QuestStage twoSecondStage = new QuestStage(
-            "secondStage2",
-            "Вы выбрали второй вариант, неплохо. Оцените ваш опыт от 1 до 10",
-            List.of(sSt2A)
+        "secondStage2",
+        "Вы выбрали второй вариант, неплохо. Оцените ваш опыт от 1 до 10",
+        List.of(sSt2A)
     );
 
     private static final StageAvailableAnswer fSt1A = new StageAvailableAnswer(
-            "firstStageFirstAnswer",
-            Optional.of("Вариант 1"),
-            AnswerType.NO_INLINE_BUTTON,
-            Optional.of(oneSecondStage),
-            Optional.of("Вариант 1")
+        "firstStageFirstAnswer",
+        Optional.of("Вариант 1"),
+        AnswerType.NO_INLINE_BUTTON,
+        Optional.of(oneSecondStage),
+        Optional.of("Вариант 1")
     );
 
     private static final StageAvailableAnswer fSt2A = new StageAvailableAnswer(
-            "firstStageSecondAnswer",
-            Optional.of("Вариант 2"),
-            AnswerType.NO_INLINE_BUTTON,
-            Optional.of(twoSecondStage),
-            Optional.of("Вариант 2")
+        "firstStageSecondAnswer",
+        Optional.of("Вариант 2"),
+        AnswerType.NO_INLINE_BUTTON,
+        Optional.of(twoSecondStage),
+        Optional.of("Вариант 2")
     );
 
     private static final QuestStage firstStage = new QuestStage(
-            "",
-            "Вас приветствует демонстрационный опросник, выберите один из двух вариантов",
-            List.of(fSt1A, fSt2A)
+        "",
+        "Вас приветствует демонстрационный опросник, выберите один из двух вариантов",
+        List.of(fSt1A, fSt2A)
     );
 
     private static final Quest quest = new Quest(
-            questName,
-            "Демонстрационный опросник",
-            true,
-            firstStage
+        questName,
+        "Демонстрационный опросник",
+        true,
+        firstStage
     );
 
-    private static final Map<String, List<QuestStage>> quest2Stage = Map.of(
-            questName, List.of(firstStage, oneSecondStage, twoSecondStage)
-    );
+    private static final Map<String, List<QuestStage>> quest2Stage = new HashMap<>() {{
+        put(questName, List.of(firstStage, oneSecondStage, twoSecondStage));
+    }};
+
+    private static final List<Quest> quests = new ArrayList<>() {{
+        add(quest);
+    }};
 
     @Override
     public Optional<Quest> getQuest(String questName) {
-        if (quest.name().equals(questName)) {
-            return Optional.of(quest);
-        } else {
-            return Optional.empty();
-        }
+        return quests.stream().filter(quest1 -> quest1.name().equals(questName)).findFirst();
     }
 
     @Override
     public List<QuestShort> getAllQuest() {
-        return List.of(quest.toShort());
+        return quests.stream().map(Quest::toShort).toList();
     }
 
     @Override
     public Optional<QuestStage> getStage(String questName, String stageName) {
         return Optional.ofNullable(quest2Stage.get(questName))
-                .flatMap(stages -> stages.stream().filter(stage -> Objects.equals(stage.name(), stageName)).findFirst());
+            .flatMap(stages -> stages.stream().filter(stage -> Objects.equals(stage.name(), stageName)).findFirst());
+    }
+
+    @Override
+    public void save(Quest quest) {
+        quests.add(quest);
+        final var stages = new ArrayList<QuestStage>();
+        stages.add(quest.startStage());
+        stages.addAll(getFromAvailableAnswers(quest.startStage().availableAnswers()));
+        quest2Stage.put(quest.name(), stages);
+    }
+
+    private List<QuestStage> getFromAvailableAnswers(List<StageAvailableAnswer> answers) {
+        final var stages = new ArrayList<QuestStage>();
+        answers.stream().forEach(
+            answer -> answer.nextStage().ifPresent(
+                it -> {
+                    stages.add(it);
+                    stages.addAll(getFromAvailableAnswers(it.availableAnswers()));
+                }
+            )
+        );
+        return stages;
     }
 }
