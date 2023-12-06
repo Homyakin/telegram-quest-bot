@@ -1,9 +1,11 @@
 package ru.homyakin.quest.bot.quest.services;
 
 import ru.homyakin.quest.bot.quest.models.Quest;
+import ru.homyakin.quest.bot.quest.models.QuestShort;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.UserAnswer;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface QuestProcessor {
@@ -18,4 +20,6 @@ public interface QuestProcessor {
     Optional<QuestStage> getUserCurrentStage(String questName, Long userId);
 
     Optional<Quest> getUserQuest(Long userId);
+
+    List<QuestShort>  getAllQuest();
 }

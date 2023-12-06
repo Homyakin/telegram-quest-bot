@@ -3,12 +3,10 @@ package ru.homyakin.quest.bot.quest.services.impl;
 import org.springframework.stereotype.Service;
 import ru.homyakin.quest.bot.quest.dao.QuestDao;
 import ru.homyakin.quest.bot.quest.dao.UserDao;
-import ru.homyakin.quest.bot.quest.models.Quest;
-import ru.homyakin.quest.bot.quest.models.QuestStage;
-import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
-import ru.homyakin.quest.bot.quest.models.UserAnswer;
+import ru.homyakin.quest.bot.quest.models.*;
 import ru.homyakin.quest.bot.quest.services.QuestProcessor;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,6 +50,11 @@ public class QuestProcessorImpl implements QuestProcessor {
     @Override
     public Optional<Quest> getUserQuest(Long userId) {
         return userDao.getUserCurrentQuest(userId);
+    }
+
+    @Override
+    public List<QuestShort> getAllQuest() {
+        return questDao.getAllQuest();
     }
 
     private Optional<StageAvailableAnswer> matchAnswer(QuestStage stage, UserAnswer answer) {
