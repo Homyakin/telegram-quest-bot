@@ -1,0 +1,9 @@
+FROM postgres:14.4-alpine
+
+ENV POSTGRES_USER=dev
+ENV POSTGRES_PASSWORD=dev
+ENV POSTGRES_DB=quest
+
+ENV TZ=Europe/Moscow
+
+EXPOSE 5432
