@@ -20,7 +20,10 @@ public class QuestMapper {
         if (questStage.isFinal()) {
             builder.removeKeyboard();
         } else {
-            builder.keyboard(answersToKeyboard(questStage.availableAnswers()).orElse(null));
+            answersToKeyboard(questStage.availableAnswers()).ifPresentOrElse(
+                builder::keyboard,
+                builder::removeKeyboard
+            );
         }
         return builder.build();
     }
@@ -41,7 +44,7 @@ public class QuestMapper {
         final var buttonAnswers = answers.stream()
             .filter(answer -> answer.answerType() == AnswerType.NO_INLINE_BUTTON)
             .toList();
-        if (buttonAnswers.size() == 0) {
+        if (buttonAnswers.isEmpty()) {
             return Optional.empty();
         }
         final var builder = ReplyKeyboardBuilder.builder();

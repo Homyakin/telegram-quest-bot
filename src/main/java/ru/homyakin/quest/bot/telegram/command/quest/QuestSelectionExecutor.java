@@ -8,7 +8,7 @@ import ru.homyakin.quest.bot.telegram.command.CommandExecutor;
 import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
 
 @Component
-public class QuestSelectionExecutor extends CommandExecutor<QuestNextStage> {
+public class QuestSelectionExecutor extends CommandExecutor<QuestSelection> {
     private final TelegramSender telegramSender;
     private final QuestProcessor questProcessor;
 
@@ -18,7 +18,7 @@ public class QuestSelectionExecutor extends CommandExecutor<QuestNextStage> {
     }
 
     @Override
-    public void execute(QuestNextStage command) {
+    public void execute(QuestSelection command) {
         questProcessor.startQuest(command.text(), command.userId())
             .ifPresentOrElse(
                 questStage -> telegramSender.send(QuestMapper.questStageToTelegramMessage(questStage, command.userId())),

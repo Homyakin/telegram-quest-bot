@@ -54,11 +54,11 @@ public class UserDaoMemory implements UserDao {
 
     @Override
     public Optional<String> getUserCurrentQuest(Long userId) {
-        return Optional.of(user2Quest.get(userId));
+        return Optional.ofNullable(user2Quest.get(userId));
     }
 
     @Override
     public Optional<String> getUserCurrentStage(String questName, Long userId) {
-        return  Optional.of(user2stage.get(userId));
+        return  Optional.ofNullable(user2stage.get(userId));
     }
 }
