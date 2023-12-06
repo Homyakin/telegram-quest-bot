@@ -1,15 +1,18 @@
 package ru.homyakin.quest.bot.quest.dao;
 
-import ru.homyakin.quest.bot.quest.models.Quest;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
+import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
+import ru.homyakin.quest.bot.quest.models.UserAnswer;
 
 import java.util.Optional;
 
 public interface UserDao {
 
-    void resetQuest(String questName, Long userId);
+    void setQuestStage(String questName, Long userId, QuestStage questStage);
 
-    Optional<Quest> getUserCurrentQuest(Long userId);
+    void saveUserAnswer(String questName, QuestStage questStage, StageAvailableAnswer availableAnswer, Long userId, UserAnswer answer);
 
-    Optional<QuestStage> getUserCurrentStage(String questName, Long userId);
+    Optional<String> getUserCurrentQuest(Long userId);
+
+    Optional<String> getUserCurrentStage(String questName, Long userId);
 }

@@ -3,7 +3,11 @@ package ru.homyakin.quest.bot.quest.services.impl;
 import org.springframework.stereotype.Service;
 import ru.homyakin.quest.bot.quest.dao.QuestDao;
 import ru.homyakin.quest.bot.quest.dao.UserDao;
-import ru.homyakin.quest.bot.quest.models.*;
+import ru.homyakin.quest.bot.quest.models.Quest;
+import ru.homyakin.quest.bot.quest.models.QuestShort;
+import ru.homyakin.quest.bot.quest.models.QuestStage;
+import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
+import ru.homyakin.quest.bot.quest.models.UserAnswer;
 import ru.homyakin.quest.bot.quest.services.QuestProcessor;
 
 import java.util.List;
@@ -24,7 +28,7 @@ public class QuestProcessorImpl implements QuestProcessor {
     public Optional<QuestStage> startQuest(String questName, Long userId) {
         return getQuest(questName)
                 .map(quest -> {
-                    userDao.resetQuest(questName, userId);
+                    userDao.setQuestStage(questName, userId, quest.startStage());
                     return quest.startStage();
                 }
         );
@@ -33,10 +37,12 @@ public class QuestProcessorImpl implements QuestProcessor {
     @Override
     public Optional<QuestStage> processStage(String questName, Long userId, UserAnswer answer) {
         return getQuest(questName)
-                .map(quest -> {
-                            QuestStage questStage = userDao.getUserCurrentStage(questName, userId).orElseThrow();
+                .flatMap(quest -> {
+                            QuestStage questStage = userDao.getUserCurrentStage(questName, userId)
+                                    .flatMap(stageName -> questDao.getStage(questName, stageName))
+                                    .orElseThrow();
                             StageAvailableAnswer availableAnswer = matchAnswer(questStage, answer).orElseThrow();
-                            questDao.saveUserAnswer(questName, questStage, availableAnswer, userId, answer);
+                            userDao.saveUserAnswer(questName, questStage, availableAnswer, userId, answer);
                             return availableAnswer.nextStage();
                         }
                 );
@@ -44,12 +50,14 @@ public class QuestProcessorImpl implements QuestProcessor {
 
     @Override
     public Optional<QuestStage> getUserCurrentStage(String questName, Long userId) {
-        return userDao.getUserCurrentStage(questName, userId);
+        return userDao.getUserCurrentStage(questName, userId)
+                .flatMap(stageName -> questDao.getStage(questName, stageName));
     }
 
     @Override
     public Optional<Quest> getUserQuest(Long userId) {
-        return userDao.getUserCurrentQuest(userId);
+        return userDao.getUserCurrentQuest(userId)
+                .flatMap(this::getQuest);
     }
 
     @Override
