@@ -9,6 +9,7 @@ import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
 
 @Component
 public class TelegramSender extends DefaultAbsSender {
@@ -20,7 +21,15 @@ public class TelegramSender extends DefaultAbsSender {
         this.token = botConfig.token();
     }
 
-    public Either<TelegramError, Message> send(SendMessage sendMessage) {
+    public Either<TelegramError, Message> send(TelegramMessage message) {
+        if (message.hasPhoto()) {
+            return send(message.toSendPhoto());
+        } else {
+            return send(message.toSendText());
+        }
+    }
+
+    private Either<TelegramError, Message> send(SendMessage sendMessage) {
         try {
             return Either.right(execute(sendMessage));
         } catch (Exception e) {
@@ -31,7 +40,7 @@ public class TelegramSender extends DefaultAbsSender {
         }
     }
 
-    public Either<TelegramError, Message> send(SendPhoto sendPhoto) {
+    private Either<TelegramError, Message> send(SendPhoto sendPhoto) {
         try {
             return Either.right(execute(sendPhoto));
         } catch (Exception e) {

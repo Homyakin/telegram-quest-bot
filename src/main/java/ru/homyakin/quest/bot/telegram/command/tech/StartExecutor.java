@@ -6,8 +6,7 @@ import ru.homyakin.quest.bot.locale.common.CommonLocalization;
 import ru.homyakin.quest.bot.telegram.TelegramSender;
 import ru.homyakin.quest.bot.telegram.command.CommandExecutor;
 import ru.homyakin.quest.bot.telegram.utils.ReplyKeyboardBuilder;
-import ru.homyakin.quest.bot.telegram.utils.SendMessageBuilder;
-import ru.homyakin.quest.bot.telegram.utils.SendPhotoBuilder;
+import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
 import ru.homyakin.quest.bot.utils.ResourceUtils;
 
 @Component
@@ -21,7 +20,7 @@ public class StartExecutor extends CommandExecutor<Start> {
     @Override
     public void execute(Start command) {
         // TODO сбросить стейт пользователя
-        telegramSender.send(SendMessageBuilder.builder()
+        telegramSender.send(TelegramMessage.builder()
             .chatId(command.userId())
             .text(CommonLocalization.start())
             .keyboard(
@@ -35,7 +34,7 @@ public class StartExecutor extends CommandExecutor<Start> {
         );
 
         // TODO УДАЛИТЬ ПРОСТО ТЕСТ
-        telegramSender.send(SendPhotoBuilder.builder()
+        telegramSender.send(TelegramMessage.builder()
             .chatId(command.userId())
             .text(CommonLocalization.start())
             .photo(ResourceUtils.getResourcePath("quest/photo/hackathon_logo.png").orElseThrow())

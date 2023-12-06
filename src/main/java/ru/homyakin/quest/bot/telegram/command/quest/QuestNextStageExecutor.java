@@ -5,7 +5,7 @@ import ru.homyakin.quest.bot.quest.models.UserAnswer;
 import ru.homyakin.quest.bot.quest.services.QuestProcessor;
 import ru.homyakin.quest.bot.telegram.TelegramSender;
 import ru.homyakin.quest.bot.telegram.command.CommandExecutor;
-import ru.homyakin.quest.bot.telegram.utils.SendMessageBuilder;
+import ru.homyakin.quest.bot.telegram.utils.TelegramMessage;
 
 @Component
 public class QuestNextStageExecutor extends CommandExecutor<QuestNextStage> {
@@ -28,7 +28,7 @@ public class QuestNextStageExecutor extends CommandExecutor<QuestNextStage> {
         ).orElseThrow();
 
         telegramSender.send(
-            SendMessageBuilder
+            TelegramMessage
                 .builder()
                 .chatId(command.userId())
                 .text(next.text())
