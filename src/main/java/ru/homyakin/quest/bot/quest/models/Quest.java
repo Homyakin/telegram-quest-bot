@@ -4,4 +4,9 @@ public record Quest(String name, String description, boolean available, QuestSta
     public QuestShort toShort() {
         return new QuestShort(name, description, available);
     }
+
+    @Override
+    public String toString() {
+        return "Quest[name=%s, description=%s, available=%s]".formatted(name, description, available);
+    }
 }

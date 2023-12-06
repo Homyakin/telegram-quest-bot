@@ -2,6 +2,7 @@ package ru.homyakin.quest.bot.quest.dao.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import org.springframework.stereotype.Repository;
 import ru.homyakin.quest.bot.quest.dao.QuestDao;
 import ru.homyakin.quest.bot.quest.models.Quest;
@@ -40,22 +41,21 @@ public class QuestDaoMemory implements QuestDao {
     @Override
     public void save(Quest quest) {
         quests.add(quest);
-        final var stages = new ArrayList<QuestStage>();
-        stages.add(quest.startStage());
-        stages.addAll(getFromAvailableAnswers(quest.startStage().availableAnswers()));
-        quest2Stage.put(quest.name(), stages);
+        final var stages = new HashMap<String, QuestStage>();
+        getUniqueStages(quest.startStage(), stages);
+        quest2Stage.put(quest.name(), stages.values().stream().toList());
     }
 
-    private List<QuestStage> getFromAvailableAnswers(List<StageAvailableAnswer> answers) {
-        final var stages = new ArrayList<QuestStage>();
-        answers.stream().forEach(
-            answer -> answer.nextStage().ifPresent(
-                it -> {
-                    stages.add(it);
-                    stages.addAll(getFromAvailableAnswers(it.availableAnswers()));
+    public static void getUniqueStages(QuestStage currentStage, HashMap<String, QuestStage> uniqueStages) {
+        uniqueStages.put(currentStage.name(), currentStage);
+
+        if (currentStage.availableAnswers() != null) {
+            for (final var answer : currentStage.availableAnswers()) {
+                final var nextStage = answer.nextStage().orElseThrow();
+                if (!uniqueStages.containsKey(nextStage.name())) {
+                    getUniqueStages(nextStage, uniqueStages);
                 }
-            )
-        );
-        return stages;
+            }
+        }
     }
 }
