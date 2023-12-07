@@ -1,0 +1,45 @@
+name = "Демонстрация циклов"
+description = "Демонстрация циклов"
+available = true
+startStageName = "stage1"
+
+[[stages]]
+name = "stage1"
+text = "Первый стейдж"
+
+[[stages.nextStages]]
+name = "stage2"
+value = "На второй стейдж"
+answerType = "NO_INLINE_BUTTON"
+
+[[stages]]
+name = "stage2"
+text = "Второй стейдж"
+
+[[stages.nextStages]]
+name = "stage3"
+value = "На третий стейдж"
+answerType = "NO_INLINE_BUTTON"
+
+[[stages.nextStages]]
+name = "stage1"
+value = "На первый стейдж"
+answerType = "NO_INLINE_BUTTON"
+
+[[stages]]
+name = "stage3"
+text = "Третий стейдж"
+
+[[stages.nextStages]]
+name = "final"
+value = "На последний стейдж"
+answerType = "NO_INLINE_BUTTON"
+
+[[stages.nextStages]]
+name = "stage2"
+value = "На второй стейдж"
+answerType = "NO_INLINE_BUTTON"
+
+[[stages]]
+name = "final"
+text = "Конец"
