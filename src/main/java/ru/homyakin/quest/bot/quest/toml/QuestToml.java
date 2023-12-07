@@ -15,20 +15,19 @@ public record QuestToml(
     String description,
     boolean available,
     List<Stage> stages,
-    String startStageName,
-    List<StageSelection> nextStages
+    String startStageName
 ){
     public record Stage(
         String name,
         String text,
-        Optional<String> photoPath
+        Optional<String> photoPath,
+        List<StageSelection> nextStages
     ) { }
 
     public record StageSelection(
         String name,
         AnswerType answerType,
-        String value,
-        List<StageSelection> nextStages
+        String value
     ) { }
 
     public Quest toQuest() {
@@ -40,8 +39,7 @@ public record QuestToml(
             new QuestStage(
                 startStage.name(),
                 startStage.text(),
-                // TODO нельзя сделать циклическую ссылку на первый элемент
-                toAvailableAnswers(name, startStage.name(), nextStages, new HashMap<>()),
+                toAvailableAnswers(name, startStage.name(), startStage.nextStages(), new HashMap<>()),
                 startStage.photoPath()
             )
         );
@@ -68,7 +66,7 @@ public record QuestToml(
                     .orElseGet(() -> new QuestStage(
                         stage.name(),
                         stage.text(),
-                        toAvailableAnswers(questName, stage.name(), selection.nextStages, mappedStages),
+                        toAvailableAnswers(questName, stage.name(), stage.nextStages(), mappedStages),
                         stage.photoPath()
                     ));
                 mappedStages.put(questStage.name(), questStage);
