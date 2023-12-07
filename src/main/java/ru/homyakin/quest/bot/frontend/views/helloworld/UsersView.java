@@ -39,7 +39,7 @@ public class UsersView extends VerticalLayout {
         this.questDao = questDao;
 
         selectQuestName.setItems(questDao.getAllQuest());
-        selectQuestName.setItemLabelGenerator(QuestShort::description);
+        selectQuestName.setItemLabelGenerator(QuestShort::name);
         selectQuestName.addValueChangeListener(e -> refreshDataByQuestName(e.getValue()));
 
         selectUserId.setItems(userDao.getAnswers().stream().map(UserAnswerResult::userId).distinct().toList());
