@@ -160,20 +160,16 @@ public class QuestDaoMemory implements QuestDao {
             .addValue("next_stage_name", answer.nextStageName())
             .addValue("quest_name", questName)
             .addValue("stage_name", stageName);
-        try {
-            jdbcTemplate.update(
-                """
-                    insert into available_answers(type, check_value, next_stage_name, quest_name, stage_name)
-                    values(:type, :check_value, :next_stage_name, :quest_name, :stage_name)
-                    on conflict(next_stage_name, quest_name, stage_name) do update set
-                    type = excluded.type,
-                    check_value = excluded.check_value
-                    """,
-                parameters
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        jdbcTemplate.update(
+            """
+                insert into available_answers(type, check_value, next_stage_name, quest_name, stage_name)
+                values(:type, :check_value, :next_stage_name, :quest_name, :stage_name)
+                on conflict(next_stage_name, quest_name, stage_name) do update set
+                type = excluded.type,
+                check_value = excluded.check_value
+                """,
+            parameters
+        );
     }
 
     private class QuesStageMapper implements RowMapper<QuestStage> {
