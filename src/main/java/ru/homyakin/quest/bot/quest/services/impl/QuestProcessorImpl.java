@@ -45,10 +45,13 @@ public class QuestProcessorImpl implements QuestProcessor {
                     if (questStage.isFinal()) {
                         return Optional.empty();
                     }
-                    StageAvailableAnswer availableAnswer = matchAnswer(questStage, answer).orElseThrow();
-                    final var nextStage = questDao.getStage(questName, availableAnswer.nextStageName());
+                    Optional<StageAvailableAnswer> availableAnswer = matchAnswer(questStage, answer);
+                    if (availableAnswer.isEmpty()) {
+                        return Optional.of(questStage);
+                    }
+                    final var nextStage = questDao.getStage(questName, availableAnswer.get().nextStageName());
                     userDao.setQuestStage(questName, userId, nextStage.orElseThrow());
-                    userDao.saveUserAnswer(questName, questStage, availableAnswer, userId, answer);
+                    userDao.saveUserAnswer(questName, questStage, availableAnswer.get(), userId, answer);
                     return nextStage;
                 }
             );
