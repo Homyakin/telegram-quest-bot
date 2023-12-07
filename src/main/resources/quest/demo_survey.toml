@@ -1,0 +1,41 @@
+name = "Опросник по хакатону"
+description = "Пример опросника"
+available = true
+startStageName = "start"
+
+[[stages]]
+name = "start"
+text = "Вас приветствует опросник по хакатону, который демонстрирует возможности движка"
+photoPath = "quest/photo/hackathon_logo.png"
+
+[[stages.nextStages]]
+name = "evaluate_hackathon"
+value = "Оценить хакатон😎"
+answerType = "NO_INLINE_BUTTON"
+
+[[stages.nextStages]]
+name = "eveluate_quest_bot"
+value = "Оценить данный проект🤓"
+answerType = "NO_INLINE_BUTTON"
+
+[[stages]]
+name = "eveluate_quest_bot"
+text = "Пожалуйста, выскажи своё мнение о данном проекте:"
+
+[[stages.nextStages]]
+name = "final"
+answerType = "USER_INPUT"
+value = ".*"
+
+[[stages]]
+name = "evaluate_hackathon"
+text = "Оцени текущий хакатон по шкале от 1 до 10:"
+
+[[stages.nextStages]]
+name = "final"
+answerType = "USER_INPUT"
+value = "^(?:[1-9]|10)$"
+
+[[stages]]
+name = "final"
+text = "Спасибо за участие в опросе❤️"
