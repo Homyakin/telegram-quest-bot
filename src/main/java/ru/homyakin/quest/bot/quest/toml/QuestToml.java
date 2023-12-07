@@ -16,32 +16,36 @@ public record QuestToml(
     boolean available,
     List<Stage> stages,
     String startStageName
-){
+) {
     public record Stage(
         String name,
         String text,
         Optional<String> photoPath,
         List<StageSelection> nextStages
-    ) { }
+    ) {
+    }
 
     public record StageSelection(
         String name,
         AnswerType answerType,
         String value
-    ) { }
+    ) {
+    }
 
     public Quest toQuest() {
-        final var startStage = getByName(startStageName);
         return new Quest(
             name,
             description,
             available,
-            new QuestStage(
-                startStage.name(),
-                startStage.text(),
-                toAvailableAnswers(name, startStage.name(), startStage.nextStages(), new HashMap<>()),
-                startStage.photoPath()
-            )
+            startStageName,
+            stages.stream()
+                .map(stage -> new QuestStage(
+                    stage.name,
+                    stage.text,
+                    toAvailableAnswers(name, stage.name(), stage.nextStages()),
+                    stage.photoPath
+                ))
+                .toList()
         );
     }
 
@@ -52,8 +56,7 @@ public record QuestToml(
     private List<StageAvailableAnswer> toAvailableAnswers(
         String questName,
         String stageName,
-        List<StageSelection> selections,
-        HashMap<String, QuestStage> mappedStages
+        List<StageSelection> selections
     ) {
         if (selections == null) {
             return new ArrayList<>();
@@ -61,21 +64,10 @@ public record QuestToml(
         final var answers = new ArrayList<StageAvailableAnswer>();
         selections.stream()
             .forEach(selection -> {
-                final var stage = getByName(selection.name);
-                final var questStage = Optional.ofNullable(mappedStages.get(stage.name))
-                    .orElseGet(() -> new QuestStage(
-                        stage.name(),
-                        stage.text(),
-                        toAvailableAnswers(questName, stage.name(), stage.nextStages(), mappedStages),
-                        stage.photoPath()
-                    ));
-                mappedStages.put(questStage.name(), questStage);
                 answers.add(
                     new StageAvailableAnswer(
-                            // надо что бы имя ответа было уникальным :(
-                            questName + "-" + stageName + "-" + selection.name(),
                         selection.answerType(),
-                        Optional.of(questStage),
+                        selection.name(),
                         selection.value
                     )
                 );

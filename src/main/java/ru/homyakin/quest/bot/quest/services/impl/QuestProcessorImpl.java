@@ -27,41 +27,43 @@ public class QuestProcessorImpl implements QuestProcessor {
     @Override
     public Optional<QuestStage> startQuest(String questName, Long userId) {
         return getQuest(questName)
-                .map(quest -> {
-                    userDao.setQuestStage(questName, userId, quest.startStage());
-                    return quest.startStage();
+            .map(quest -> questDao.getStage(quest.name(), quest.startStageName()).orElseThrow())
+            .map(stage -> {
+                    userDao.setQuestStage(questName, userId, stage);
+                    return stage;
                 }
-        );
+            );
     }
 
     @Override
     public Optional<QuestStage> processStage(String questName, Long userId, UserAnswer answer) {
         return getQuest(questName)
-                .flatMap(quest -> {
-                            QuestStage questStage = userDao.getUserCurrentStage(questName, userId)
-                                    .flatMap(stageName -> questDao.getStage(questName, stageName))
-                                    .orElseThrow();
-                            if (questStage.isFinal()) {
-                                return Optional.empty();
-                            }
-                            StageAvailableAnswer availableAnswer = matchAnswer(questStage, answer).orElseThrow();
-                            userDao.setQuestStage(questName, userId, availableAnswer.nextStage().orElseThrow());
-                            userDao.saveUserAnswer(questName, questStage, availableAnswer, userId, answer);
-                            return availableAnswer.nextStage();
-                        }
-                );
+            .flatMap(quest -> {
+                    QuestStage questStage = userDao.getUserCurrentStage(questName, userId)
+                        .flatMap(stageName -> questDao.getStage(questName, stageName))
+                        .orElseThrow();
+                    if (questStage.isFinal()) {
+                        return Optional.empty();
+                    }
+                    StageAvailableAnswer availableAnswer = matchAnswer(questStage, answer).orElseThrow();
+                    final var nextStage = questDao.getStage(questName, availableAnswer.nextStageName());
+                    userDao.setQuestStage(questName, userId, nextStage.orElseThrow());
+                    userDao.saveUserAnswer(questName, questStage, availableAnswer, userId, answer);
+                    return nextStage;
+                }
+            );
     }
 
     @Override
     public Optional<QuestStage> getUserCurrentStage(String questName, Long userId) {
         return userDao.getUserCurrentStage(questName, userId)
-                .flatMap(stageName -> questDao.getStage(questName, stageName));
+            .flatMap(stageName -> questDao.getStage(questName, stageName));
     }
 
     @Override
     public Optional<Quest> getUserQuest(Long userId) {
         return userDao.getUserCurrentQuest(userId)
-                .flatMap(this::getQuest);
+            .flatMap(this::getQuest);
     }
 
     @Override
@@ -76,12 +78,12 @@ public class QuestProcessorImpl implements QuestProcessor {
 
     private Optional<StageAvailableAnswer> matchAnswer(QuestStage stage, UserAnswer answer) {
         return stage.availableAnswers().stream()
-                .filter(ans -> ans.isMatchUserAnswer(answer))
-                .findFirst();
+            .filter(ans -> ans.isMatchUserAnswer(answer))
+            .findFirst();
     }
 
     private Optional<Quest> getQuest(String questName) {
         return questDao.getQuest(questName)
-                .filter(Quest::available);
+            .filter(Quest::available);
     }
 }

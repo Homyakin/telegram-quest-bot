@@ -1,11 +1,9 @@
 package ru.homyakin.quest.bot.quest.models;
 
-import java.util.Optional;
 
 public record StageAvailableAnswer(
-        String name,
         AnswerType answerType,
-        Optional<QuestStage> nextStage,
+        String nextStageName,
         String value
 ) {
     public boolean isMatchUserAnswer(UserAnswer userAnswer) {

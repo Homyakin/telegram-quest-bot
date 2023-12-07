@@ -1,7 +1,17 @@
 package ru.homyakin.quest.bot.quest.models;
 
-public record Quest(String name, String description, boolean available, QuestStage startStage) {
+import java.util.List;
+
+public record Quest(
+    String name,
+    String description,
+    boolean available,
+    String startStageName,
+    List<QuestStage> stages
+) {
     public QuestShort toShort() {
         return new QuestShort(name, description, available);
     }
+
+
 }

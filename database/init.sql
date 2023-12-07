@@ -17,11 +17,10 @@ create table quests(
 	name varchar(100) primary key,
 	description varchar(100),
 	available bool,
-	start_stage_id numeric
+	start_stage_name varchar(100)
 );
 
 create table quest_stages(
-	id serial,
 	quest_name varchar(100),
 	name varchar(100),
 	description text,
@@ -30,15 +29,10 @@ create table quest_stages(
 );
 
 create table available_answers(
-	id serial,
-	name varchar(100) primary key,
 	type varchar(50),
 	check_value varchar(1000),
-	next_stage_id numeric
-);
-
-create table stage2answers(
-	stage_id numeric,
-	answer_id numeric,
-	constraint s2a_uq unique(stage_id, answer_id)
+	next_stage_name varchar(100),
+    quest_name varchar(100),
+    stage_name varchar(100),
+    constraint aa_uq unique(quest_name, stage_name, next_stage_name)
 );
