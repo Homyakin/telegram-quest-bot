@@ -67,6 +67,7 @@ public class UsersView extends VerticalLayout {
     private void clearSelects() {
         selectQuestName.clear();
         selectUserId.clear();
+        selectStage.clear();
         refreshData(null, null, null);
     }
 
