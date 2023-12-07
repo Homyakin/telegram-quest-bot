@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.homyakin.quest.bot.quest.services.QuestProcessor;
 import ru.homyakin.quest.bot.telegram.command.quest.QuestNextStage;
 import ru.homyakin.quest.bot.telegram.command.quest.QuestSelection;
+import ru.homyakin.quest.bot.telegram.command.tech.About;
 import ru.homyakin.quest.bot.telegram.command.tech.Start;
 
 @Component
@@ -36,6 +37,7 @@ public class CommandParser {
         return CommandType.getFromString(message.getText())
             .<Command>map(commandType -> switch (commandType) {
                 case START -> Start.from(message);
+                case ABOUT -> About.from(message);
             })
             .or(() -> questProcessor
                 .getUserQuest(message.getFrom().getId())

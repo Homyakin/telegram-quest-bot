@@ -18,4 +18,8 @@ public class CommonLocalization {
     public static String questEnding() {
         return resource.questEnding();
     }
+
+    public static String about() {
+        return resource.about();
+    }
 }

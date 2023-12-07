@@ -5,6 +5,7 @@ import java.util.Optional;
 
 public enum CommandType {
     START("/start"),
+    ABOUT("/about"),
     ;
 
     private final String text;
