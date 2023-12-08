@@ -5,8 +5,6 @@ import ru.homyakin.quest.bot.quest.models.Quest;
 import ru.homyakin.quest.bot.quest.models.QuestStage;
 import ru.homyakin.quest.bot.quest.models.StageAvailableAnswer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +21,21 @@ public record QuestToml(
         Optional<String> photoPath,
         List<StageSelection> nextStages
     ) {
+        public QuestStage toQuestStage() {
+            return new QuestStage(
+                name,
+                text,
+                toAvailableAnswers(nextStages()),
+                photoPath
+            );
+        }
+
+        private List<StageAvailableAnswer> toAvailableAnswers(List<StageSelection> selections) {
+            if (selections == null) {
+                return List.of();
+            }
+            return selections.stream().map(StageSelection::toStageAvailableAnswer).toList();
+        }
     }
 
     public record StageSelection(
@@ -30,6 +43,13 @@ public record QuestToml(
         AnswerType answerType,
         String value
     ) {
+        public StageAvailableAnswer toStageAvailableAnswer() {
+            return new StageAvailableAnswer(
+                answerType,
+                name,
+                value
+            );
+        }
     }
 
     public Quest toQuest() {
@@ -38,40 +58,7 @@ public record QuestToml(
             description,
             available,
             startStageName,
-            stages.stream()
-                .map(stage -> new QuestStage(
-                    stage.name,
-                    stage.text,
-                    toAvailableAnswers(name, stage.name(), stage.nextStages()),
-                    stage.photoPath
-                ))
-                .toList()
+            stages.stream().map(Stage::toQuestStage).toList()
         );
-    }
-
-    private Stage getByName(String stageName) {
-        return stages.stream().filter(stage -> stage.name.equals(stageName)).findFirst().orElseThrow();
-    }
-
-    private List<StageAvailableAnswer> toAvailableAnswers(
-        String questName,
-        String stageName,
-        List<StageSelection> selections
-    ) {
-        if (selections == null) {
-            return new ArrayList<>();
-        }
-        final var answers = new ArrayList<StageAvailableAnswer>();
-        selections.stream()
-            .forEach(selection -> {
-                answers.add(
-                    new StageAvailableAnswer(
-                        selection.answerType(),
-                        selection.name(),
-                        selection.value
-                    )
-                );
-            });
-        return answers;
     }
 }
